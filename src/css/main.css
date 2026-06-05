@@ -1,0 +1,65 @@
+/*
+ * Web resource: new_/css/main.css
+ * Estilos compartidos para web resources HTML.
+ */
+
+:root {
+    --cap-primary: #0b5cab;
+    --cap-primary-hover: #094a8a;
+    --cap-text: #1b1b1b;
+    --cap-border: #d1d1d1;
+    --cap-bg: #ffffff;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+    color: var(--cap-text);
+    background: var(--cap-bg);
+}
+
+.cap-dialog {
+    max-width: 420px;
+    margin: 24px auto;
+    padding: 16px 20px;
+}
+
+.cap-dialog__title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 8px;
+}
+
+.cap-dialog__body {
+    font-size: 14px;
+    margin: 0 0 20px;
+}
+
+.cap-dialog__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.cap-btn {
+    padding: 6px 16px;
+    font-size: 14px;
+    border-radius: 2px;
+    border: 1px solid transparent;
+    cursor: pointer;
+}
+
+.cap-btn--primary {
+    background: var(--cap-primary);
+    color: #fff;
+}
+
+.cap-btn--primary:hover {
+    background: var(--cap-primary-hover);
+}
+
+.cap-btn--secondary {
+    background: #fff;
+    color: var(--cap-text);
+    border-color: var(--cap-border);
+}
