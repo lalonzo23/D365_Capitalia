@@ -60,11 +60,80 @@ Cap.Common = (function () {
             .toLowerCase();
     }
 
+    /**
+     * Muestra u oculta una pestaña del formulario.
+     * @param {Xrm.FormContext} formContext
+     * @param {string} tabName - Nombre lógico de la pestaña.
+     * @param {boolean} visible
+     */
+    function setTabVisible(formContext, tabName, visible) {
+        var tab = formContext.ui.tabs.get(tabName);
+        if (tab) tab.setVisible(visible);
+    }
+
+    /**
+     * Muestra una pestaña del formulario.
+     * @param {Xrm.FormContext} formContext
+     * @param {string} tabName
+     */
+    function showTab(formContext, tabName) {
+        setTabVisible(formContext, tabName, true);
+    }
+
+    /**
+     * Oculta una pestaña del formulario.
+     * @param {Xrm.FormContext} formContext
+     * @param {string} tabName
+     */
+    function hideTab(formContext, tabName) {
+        setTabVisible(formContext, tabName, false);
+    }
+
+    /**
+     * Muestra u oculta una sección dentro de una pestaña.
+     * @param {Xrm.FormContext} formContext
+     * @param {string} tabName - Nombre lógico de la pestaña que contiene la sección.
+     * @param {string} sectionName - Nombre lógico de la sección.
+     * @param {boolean} visible
+     */
+    function setSectionVisible(formContext, tabName, sectionName, visible) {
+        var tab = formContext.ui.tabs.get(tabName);
+        if (!tab) return;
+        var section = tab.sections.get(sectionName);
+        if (section) section.setVisible(visible);
+    }
+
+    /**
+     * Muestra una sección dentro de una pestaña.
+     * @param {Xrm.FormContext} formContext
+     * @param {string} tabName
+     * @param {string} sectionName
+     */
+    function showSection(formContext, tabName, sectionName) {
+        setSectionVisible(formContext, tabName, sectionName, true);
+    }
+
+    /**
+     * Oculta una sección dentro de una pestaña.
+     * @param {Xrm.FormContext} formContext
+     * @param {string} tabName
+     * @param {string} sectionName
+     */
+    function hideSection(formContext, tabName, sectionName) {
+        setSectionVisible(formContext, tabName, sectionName, false);
+    }
+
     return {
         FormType: FormType,
         notify: notify,
         clearNotify: clearNotify,
         isEmpty: isEmpty,
-        getRecordId: getRecordId
+        getRecordId: getRecordId,
+        setTabVisible: setTabVisible,
+        showTab: showTab,
+        hideTab: hideTab,
+        setSectionVisible: setSectionVisible,
+        showSection: showSection,
+        hideSection: hideSection
     };
 })();
