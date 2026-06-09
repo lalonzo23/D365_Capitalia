@@ -131,13 +131,6 @@ Cap.Lead = (function () {
         aplicarTin(executionContext.getFormContext());
     }
 
-    function onNaturalezaChange(executionContext) {
-        aplicarClienteTitular(executionContext.getFormContext());
-    }
-
-    function onTipoCuentaChange(executionContext) {
-        aplicarClienteTitular(executionContext.getFormContext());
-    }
 
     function onVinculadoCapitaliaChange(executionContext) {
         aplicarVinculadoCapitalia(executionContext.getFormContext());
@@ -155,7 +148,7 @@ Cap.Lead = (function () {
         aplicarPep(fc);
         aplicarRepresentanteLegal(fc);
         aplicarTin(fc);
-        aplicarClienteTitular(fc);
+
         aplicarVinculadoCapitalia(fc);
     }
 
@@ -278,15 +271,6 @@ Cap.Lead = (function () {
         setRequerido(fc, ["new_tin"], posee === true);
     }
 
-    // ── Regla 7: Cliente Potencial Titular ───────────────────────────────────
-    // Visible solo cuando Naturaleza = Co-Titular
-    function aplicarClienteTitular(fc) {
-        var naturaleza = getVal(fc, "new_naturaleza");
-        var mostrar    = (naturaleza === Naturaleza.CoTitular);
-
-        setControl(fc, "new_clientepotencialtitular", mostrar);
-        setRequerido(fc, ["new_clientepotencialtitular"], mostrar);
-    }
 
     // ── Regla 8: Control accionistas / Vinculado a Capitalia ─────────────────
     function aplicarVinculadoCapitalia(fc) {
@@ -490,8 +474,7 @@ Cap.Lead = (function () {
         onEsPepChange:             onEsPepChange,
         onRepresentanteLegalChange: onRepresentanteLegalChange,
         onTinChange:               onTinChange,
-        onNaturalezaChange:        onNaturalezaChange,
-        onTipoCuentaChange:        onTipoCuentaChange,
+
         onVinculadoCapitaliaChange: onVinculadoCapitaliaChange
     };
 })();
