@@ -97,7 +97,6 @@ Cap.Lead = (function () {
         ok = validarEmail(fc)           && ok;
         ok = validarContacto(fc)        && ok;
         ok = validarIdentificacion(fc)  && ok;
-        ok = validarFecNacimiento(fc)   && ok;
         ok = validarFecExpiracion(fc)   && ok;
 
         if (!ok) { args.preventDefault(); }
@@ -356,28 +355,6 @@ Cap.Lead = (function () {
         return ok;
     }
 
-    /** Validar que el cliente sea mayor de 18 años */
-    function validarFecNacimiento(fc) {
-        var tipo = getVal(fc, "new_tipodepersona");
-        if (tipo !== TipoPersona.Fisica) { return true; }
-
-        var fechaNac = getVal(fc, "new_fechadenacimiento");
-        if (!fechaNac) { return true; }
-
-        var hoy   = new Date();
-        var limite = new Date(fechaNac);
-        limite.setFullYear(limite.getFullYear() + 18);
-
-        if (limite > hoy) {
-            Cap.Common.notify(fc,
-                "El cliente debe ser mayor de 18 años.", "ERROR", NOTIF.EDAD);
-            notifControl(fc, "new_fechadenacimiento", "Debe ser mayor de 18 años.", NOTIF.EDAD);
-            return false;
-        }
-        Cap.Common.clearNotify(fc, NOTIF.EDAD);
-        limpiarNotifControl(fc, "new_fechadenacimiento", NOTIF.EDAD);
-        return true;
-    }
 
     /** Validar que la cédula/pasaporte no estén vencidos */
     function validarFecExpiracion(fc) {
