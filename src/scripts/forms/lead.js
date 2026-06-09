@@ -134,9 +134,6 @@ Cap.Lead = (function () {
         aplicarClienteTitular(executionContext.getFormContext());
     }
 
-    function onVinculadoCapitaliaChange(executionContext) {
-        aplicarVinculadoCapitalia(executionContext.getFormContext());
-    }
 
     // ════════════════════════════════════════════════════════════════════════
     //  REGLAS DE NEGOCIO
@@ -151,7 +148,6 @@ Cap.Lead = (function () {
         aplicarRepresentanteLegal(fc);
         aplicarTin(fc);
         aplicarClienteTitular(fc);
-        aplicarVinculadoCapitalia(fc);
     }
 
     // ── Regla 7: Cliente Potencial Titular ───────────────────────────────────
@@ -213,7 +209,6 @@ Cap.Lead = (function () {
         }
         if (tipo === TipoPersona.Juridica) {
             aplicarRepresentanteLegal(fc);
-            aplicarVinculadoCapitalia(fc);
         }
     }
 
@@ -284,13 +279,6 @@ Cap.Lead = (function () {
     }
 
 
-    // ── Regla 8: Control accionistas / Vinculado a Capitalia ─────────────────
-    function aplicarVinculadoCapitalia(fc) {
-        var vinculado = getVal(fc, "new_controlaccionistasultimos5annos");
-        setControl(fc, "new_dequeformavinculado",             vinculado === true);
-        setControl(fc, "new_nombrecompletovinculadoacapitalia", vinculado === true);
-        setControl(fc, "new_parentescovinculadoacapitalia",   vinculado === true);
-    }
 
     // ════════════════════════════════════════════════════════════════════════
     //  VALIDACIONES OnSave
@@ -464,7 +452,6 @@ Cap.Lead = (function () {
         onEsPepChange:             onEsPepChange,
         onRepresentanteLegalChange: onRepresentanteLegalChange,
         onTinChange:               onTinChange,
-        onNaturalezaChange:        onNaturalezaChange,
-        onVinculadoCapitaliaChange: onVinculadoCapitaliaChange
+        onNaturalezaChange:        onNaturalezaChange
     };
 })();
