@@ -132,7 +132,11 @@ Cap.Lead = (function () {
     }
 
     function onNaturalezaChange(executionContext) {
-        aplicarNaturaleza(executionContext.getFormContext());
+        aplicarClienteTitular(executionContext.getFormContext());
+    }
+
+    function onTipoCuentaChange(executionContext) {
+        aplicarClienteTitular(executionContext.getFormContext());
     }
 
     function onVinculadoCapitaliaChange(executionContext) {
@@ -151,7 +155,7 @@ Cap.Lead = (function () {
         aplicarPep(fc);
         aplicarRepresentanteLegal(fc);
         aplicarTin(fc);
-        aplicarNaturaleza(fc);
+        aplicarClienteTitular(fc);
         aplicarVinculadoCapitalia(fc);
     }
 
@@ -274,12 +278,17 @@ Cap.Lead = (function () {
         setRequerido(fc, ["new_tin"], posee === true);
     }
 
-    // ── Regla 7: Naturaleza (Titular / Co-Titular) ───────────────────────────
-    function aplicarNaturaleza(fc) {
-        var nat = getVal(fc, "new_naturaleza");
-        var esCoTitular = (nat === Naturaleza.CoTitular);
-        setControl(fc, "new_clientepotencialtitular", esCoTitular);
-        setRequerido(fc, ["new_clientepotencialtitular"], esCoTitular);
+    // ── Regla 7: Cliente Potencial Titular ───────────────────────────────────
+    // Visible solo cuando Tipo de Cuenta = Mancomunada Y Naturaleza = Co-Titular
+    function aplicarClienteTitular(fc) {
+        var tipoCuenta = getVal(fc, "new_tipodecuenta");
+        var naturaleza = getVal(fc, "new_naturaleza");
+
+        var mostrar = (tipoCuenta === 2 /* Mancomunada */ &&
+                       naturaleza  === Naturaleza.CoTitular);
+
+        setControl(fc, "new_clientepotencialtitular", mostrar);
+        setRequerido(fc, ["new_clientepotencialtitular"], mostrar);
     }
 
     // ── Regla 8: Control accionistas / Vinculado a Capitalia ─────────────────
@@ -485,6 +494,7 @@ Cap.Lead = (function () {
         onRepresentanteLegalChange: onRepresentanteLegalChange,
         onTinChange:               onTinChange,
         onNaturalezaChange:        onNaturalezaChange,
+        onTipoCuentaChange:        onTipoCuentaChange,
         onVinculadoCapitaliaChange: onVinculadoCapitaliaChange
     };
 })();
