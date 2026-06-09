@@ -134,6 +134,10 @@ Cap.Lead = (function () {
         aplicarClienteTitular(executionContext.getFormContext());
     }
 
+    function onTipoCuentaChange(executionContext) {
+        aplicarNaturalezaReadOnly(executionContext.getFormContext());
+    }
+
 
     // ════════════════════════════════════════════════════════════════════════
     //  REGLAS DE NEGOCIO
@@ -148,6 +152,21 @@ Cap.Lead = (function () {
         aplicarRepresentanteLegal(fc);
         aplicarTin(fc);
         aplicarClienteTitular(fc);
+        aplicarNaturalezaReadOnly(fc);
+    }
+
+    // ── Regla 7b: Naturaleza readonly cuando Física + Individual ─────────────
+    function aplicarNaturalezaReadOnly(fc) {
+        var tipo       = getVal(fc, "new_tipodepersona");
+        var tipoCuenta = getVal(fc, "new_tipodecuenta");
+
+        // Persona Física (100000000) + Individual (1) → readonly
+        var bloquear = (tipo === TipoPersona.Fisica && tipoCuenta === 1);
+
+        var ctrl = fc.getControl("new_naturaleza");
+        if (ctrl) {
+            ctrl.setDisabled(bloquear);
+        }
     }
 
     // ── Regla 7: Cliente Potencial Titular ───────────────────────────────────
@@ -210,6 +229,7 @@ Cap.Lead = (function () {
         if (tipo === TipoPersona.Juridica) {
             aplicarRepresentanteLegal(fc);
         }
+        aplicarNaturalezaReadOnly(fc);
     }
 
     // ── Regla 2: Tipo de Identificación ─────────────────────────────────────
@@ -452,6 +472,7 @@ Cap.Lead = (function () {
         onEsPepChange:             onEsPepChange,
         onRepresentanteLegalChange: onRepresentanteLegalChange,
         onTinChange:               onTinChange,
-        onNaturalezaChange:        onNaturalezaChange
+        onNaturalezaChange:        onNaturalezaChange,
+        onTipoCuentaChange:        onTipoCuentaChange
     };
 })();
