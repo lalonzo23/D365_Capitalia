@@ -279,13 +279,10 @@ Cap.Lead = (function () {
     }
 
     // ── Regla 7: Cliente Potencial Titular ───────────────────────────────────
-    // Visible solo cuando Tipo de Cuenta = Mancomunada Y Naturaleza = Co-Titular
+    // Visible solo cuando Naturaleza = Co-Titular
     function aplicarClienteTitular(fc) {
-        var tipoCuenta = getVal(fc, "new_tipodecuenta");
         var naturaleza = getVal(fc, "new_naturaleza");
-
-        var mostrar = (tipoCuenta === 2 /* Mancomunada */ &&
-                       naturaleza  === Naturaleza.CoTitular);
+        var mostrar    = (naturaleza === Naturaleza.CoTitular);
 
         setControl(fc, "new_clientepotencialtitular", mostrar);
         setRequerido(fc, ["new_clientepotencialtitular"], mostrar);
