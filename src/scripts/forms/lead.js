@@ -155,31 +155,44 @@ Cap.Lead = (function () {
         aplicarVinculadoCapitalia(fc);
     }
 
+    // ── Tabs / secciones exclusivos de Persona Jurídica ─────────────────────
+    var TABS_JURIDICA     = ["tab_fatca", "tab_empresas", "tab_accionistas", "tab_consejo"];
+    var SECCIONES_JURIDICA = ["secc_datos_cliente", "secc_desc_negocio"];
+
     // ── Regla 1: Tipo de Persona ─────────────────────────────────────────────
     function aplicarTipoPersona(fc) {
         var tipo = getVal(fc, "new_tipodepersona");
 
         if (tipo === TipoPersona.Fisica) {
+            // Campos
             setVisible(fc, CAMPOS_FISICA,   true);
             setVisible(fc, CAMPOS_JURIDICA, false);
             setRequerido(fc, ["new_primerapellido", "new_fechadenacimiento",
                                "new_tipodeidentificacin", "new_sexo"], true);
             setRequerido(fc, ["companyname", "new_rnc"], false);
+            // Tabs y secciones exclusivas de Jurídica → ocultar
+            setTabsVisible(fc, TABS_JURIDICA, false);
+            setSeccionesVisible(fc, SECCIONES_JURIDICA, false);
 
         } else if (tipo === TipoPersona.Juridica) {
+            // Campos
             setVisible(fc, CAMPOS_JURIDICA, true);
             setVisible(fc, CAMPOS_FISICA,   false);
-            // Los campos de cónyuge y PEP no aplican a persona jurídica
-            setVisible(fc, CAMPOS_CONYUGE, false);
-            setVisible(fc, CAMPOS_PEP,     false);
+            setVisible(fc, CAMPOS_CONYUGE,  false);
+            setVisible(fc, CAMPOS_PEP,      false);
             setRequerido(fc, ["companyname", "new_rnc"], true);
             setRequerido(fc, ["new_primerapellido", "new_fechadenacimiento",
                                "new_tipodeidentificacin", "new_sexo"], false);
+            // Tabs y secciones exclusivas de Jurídica → mostrar
+            setTabsVisible(fc, TABS_JURIDICA, true);
+            setSeccionesVisible(fc, SECCIONES_JURIDICA, true);
 
         } else {
-            // Sin selección: ocultar ambos bloques
+            // Sin selección: ocultar todo
             setVisible(fc, CAMPOS_FISICA,   false);
             setVisible(fc, CAMPOS_JURIDICA, false);
+            setTabsVisible(fc, TABS_JURIDICA, false);
+            setSeccionesVisible(fc, SECCIONES_JURIDICA, false);
         }
 
         // Re-evaluar sub-reglas que dependen del tipo de persona
@@ -406,6 +419,27 @@ Cap.Lead = (function () {
     function setVisible(fc, campos, visible) {
         campos.forEach(function (campo) {
             setControl(fc, campo, visible);
+        });
+    }
+
+    /** Muestra u oculta una lista de tabs por su nombre lógico. */
+    function setTabsVisible(fc, tabs, visible) {
+        tabs.forEach(function (tabName) {
+            var tab = fc.ui.tabs.get(tabName);
+            if (tab) { tab.setVisible(visible); }
+        });
+    }
+
+    /**
+     * Muestra u oculta una lista de secciones buscándolas en todos los tabs.
+     * No es necesario conocer el tab contenedor.
+     */
+    function setSeccionesVisible(fc, secciones, visible) {
+        secciones.forEach(function (secName) {
+            fc.ui.tabs.forEach(function (tab) {
+                var sec = tab.sections.get(secName);
+                if (sec) { sec.setVisible(visible); }
+            });
         });
     }
 
