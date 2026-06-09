@@ -131,6 +131,9 @@ Cap.Lead = (function () {
         aplicarTin(executionContext.getFormContext());
     }
 
+    function onNaturalezaChange(executionContext) {
+        aplicarClienteTitular(executionContext.getFormContext());
+    }
 
     function onVinculadoCapitaliaChange(executionContext) {
         aplicarVinculadoCapitalia(executionContext.getFormContext());
@@ -148,8 +151,18 @@ Cap.Lead = (function () {
         aplicarPep(fc);
         aplicarRepresentanteLegal(fc);
         aplicarTin(fc);
-
+        aplicarClienteTitular(fc);
         aplicarVinculadoCapitalia(fc);
+    }
+
+    // ── Regla 7: Cliente Potencial Titular ───────────────────────────────────
+    // Visible solo cuando Naturaleza = Co-Titular
+    function aplicarClienteTitular(fc) {
+        var naturaleza = getVal(fc, "new_naturaleza");
+        var mostrar    = (naturaleza === Naturaleza.CoTitular);
+
+        setControl(fc, "new_clientepotencialtitular", mostrar);
+        setRequerido(fc, ["new_clientepotencialtitular"], mostrar);
     }
 
     // ── Tabs / secciones exclusivos de Persona Jurídica ─────────────────────
@@ -474,7 +487,7 @@ Cap.Lead = (function () {
         onEsPepChange:             onEsPepChange,
         onRepresentanteLegalChange: onRepresentanteLegalChange,
         onTinChange:               onTinChange,
-
+        onNaturalezaChange:        onNaturalezaChange,
         onVinculadoCapitaliaChange: onVinculadoCapitaliaChange
     };
 })();
