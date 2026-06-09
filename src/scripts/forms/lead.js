@@ -65,19 +65,6 @@ Cap.Lead = (function () {
         "new_indiqueelcargo", "new_estactualmenteocupandoelcargo"
     ];
 
-    // ── Notificaciones ───────────────────────────────────────────────────────
-    var NOTIF = {
-        EMAIL:   "lead_email",
-        CEDULA:  "lead_cedula",
-        RNC:     "lead_rnc",
-        EDAD:    "lead_edad",
-        FECEXP:  "lead_fecexp",
-        FECEXPP: "lead_fecexpp",
-        CONTACTO:"lead_contacto"
-    };
-
-    var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
     // ════════════════════════════════════════════════════════════════════════
     //  EVENTOS PRINCIPALES
     // ════════════════════════════════════════════════════════════════════════
@@ -88,18 +75,9 @@ Cap.Lead = (function () {
         aplicarReglasIniciales(fc);
     }
 
-    /** OnSave */
+    /** OnSave — sin validaciones (solo placeholder por si se requiere a futuro) */
     function onSave(executionContext) {
-        var fc   = executionContext.getFormContext();
-        var args = executionContext.getEventArgs();
-        var ok   = true;
-
-        ok = validarEmail(fc)           && ok;
-        ok = validarContacto(fc)        && ok;
-        ok = validarIdentificacion(fc)  && ok;
-        ok = validarFecExpiracion(fc)   && ok;
-
-        if (!ok) { args.preventDefault(); }
+        // Todas las validaciones fueron retiradas.
     }
 
     // ────────────────────────────────────────────────────────────────────────
@@ -253,9 +231,6 @@ Cap.Lead = (function () {
             setControl(fc, "new_fechaexpiracioncedula",false);
             setControl(fc, "new_fechaexpiracionpasaporte", false);
         }
-
-        // Limpiar validaciones anteriores de identificación
-        Cap.Common.clearNotify(fc, NOTIF.CEDULA);
     }
 
     // ── Regla 3: Estado Civil ────────────────────────────────────────────────
@@ -299,101 +274,6 @@ Cap.Lead = (function () {
     }
 
 
-
-    // ════════════════════════════════════════════════════════════════════════
-    //  VALIDACIONES OnSave
-    // ════════════════════════════════════════════════════════════════════════
-
-    /** Validar formato de email */
-    function validarEmail(fc) {
-        var val = getVal(fc, "emailaddress1");
-        if (Cap.Common.isEmpty(val) || EMAIL_RE.test(val)) {
-            Cap.Common.clearNotify(fc, NOTIF.EMAIL);
-            limpiarNotifControl(fc, "emailaddress1", NOTIF.EMAIL);
-            return true;
-        }
-        Cap.Common.notify(fc, "El correo electrónico no tiene un formato válido.", "ERROR", NOTIF.EMAIL);
-        notifControl(fc, "emailaddress1", "Formato inválido.", NOTIF.EMAIL);
-        return false;
-    }
-
-    /** Al menos email o teléfono */
-    function validarContacto(fc) {
-        var email  = getVal(fc, "emailaddress1");
-        var tel1   = getVal(fc, "telephone1");
-        var movil  = getVal(fc, "mobilephone");
-        if (!Cap.Common.isEmpty(email) || !Cap.Common.isEmpty(tel1) || !Cap.Common.isEmpty(movil)) {
-            Cap.Common.clearNotify(fc, NOTIF.CONTACTO);
-            return true;
-        }
-        Cap.Common.notify(fc,
-            "Debe indicar al menos un medio de contacto: correo electrónico, teléfono de trabajo o teléfono móvil.",
-            "ERROR", NOTIF.CONTACTO);
-        return false;
-    }
-
-    /** Validar cédula (11 dígitos) y RNC (9 dígitos) */
-    function validarIdentificacion(fc) {
-        var tipoId = getVal(fc, "new_tipodeidentificacin");
-        var ok = true;
-
-        if (tipoId === TipoId.Cedula) {
-            var cedula = (getVal(fc, "new_cedula") || "").replace(/[-\s]/g, "");
-            if (!Cap.Common.isEmpty(cedula) && !/^\d{11}$/.test(cedula)) {
-                Cap.Common.notify(fc, "La cédula debe tener 11 dígitos numéricos.", "ERROR", NOTIF.CEDULA);
-                notifControl(fc, "new_cedula", "Deben ser 11 dígitos.", NOTIF.CEDULA);
-                ok = false;
-            } else {
-                Cap.Common.clearNotify(fc, NOTIF.CEDULA);
-                limpiarNotifControl(fc, "new_cedula", NOTIF.CEDULA);
-            }
-        }
-
-        // RNC: aplica a persona jurídica (9 dígitos)
-        var rnc = (getVal(fc, "new_rnc") || "").replace(/[-\s]/g, "");
-        if (!Cap.Common.isEmpty(rnc) && !/^\d{9}$/.test(rnc)) {
-            Cap.Common.notify(fc, "El RNC debe tener 9 dígitos numéricos.", "ERROR", NOTIF.RNC);
-            notifControl(fc, "new_rnc", "Deben ser 9 dígitos.", NOTIF.RNC);
-            ok = false;
-        } else {
-            Cap.Common.clearNotify(fc, NOTIF.RNC);
-            limpiarNotifControl(fc, "new_rnc", NOTIF.RNC);
-        }
-
-        return ok;
-    }
-
-
-    /** Validar que la cédula/pasaporte no estén vencidos */
-    function validarFecExpiracion(fc) {
-        var ok   = true;
-        var hoy  = new Date();
-        hoy.setHours(0, 0, 0, 0);
-
-        var tipoId = getVal(fc, "new_tipodeidentificacin");
-
-        if (tipoId === TipoId.Cedula) {
-            var expCed = getVal(fc, "new_fechaexpiracioncedula");
-            if (expCed && new Date(expCed) < hoy) {
-                Cap.Common.notify(fc, "La cédula se encuentra vencida.", "WARNING", NOTIF.FECEXP);
-                ok = false;
-            } else {
-                Cap.Common.clearNotify(fc, NOTIF.FECEXP);
-            }
-        }
-
-        if (tipoId === TipoId.Pasaporte) {
-            var expPas = getVal(fc, "new_fechaexpiracionpasaporte");
-            if (expPas && new Date(expPas) < hoy) {
-                Cap.Common.notify(fc, "El pasaporte se encuentra vencido.", "WARNING", NOTIF.FECEXPP);
-                ok = false;
-            } else {
-                Cap.Common.clearNotify(fc, NOTIF.FECEXPP);
-            }
-        }
-
-        return ok;
-    }
 
     // ════════════════════════════════════════════════════════════════════════
     //  HELPERS INTERNOS
@@ -446,18 +326,6 @@ Cap.Lead = (function () {
                 attr.setRequiredLevel(requerido ? "required" : "none");
             }
         });
-    }
-
-    /** Pone notificación en el control de un campo. */
-    function notifControl(fc, campo, msg, id) {
-        var ctrl = fc.getControl(campo);
-        if (ctrl) { ctrl.setNotification(msg, id); }
-    }
-
-    /** Limpia la notificación de un control. */
-    function limpiarNotifControl(fc, campo, id) {
-        var ctrl = fc.getControl(campo);
-        if (ctrl) { ctrl.clearNotification(id); }
     }
 
     // ── API pública ──────────────────────────────────────────────────────────
