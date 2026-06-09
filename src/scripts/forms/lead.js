@@ -236,8 +236,10 @@ Cap.Lead = (function () {
 
     // ── Regla 3: Estado Civil ────────────────────────────────────────────────
     function aplicarEstadoCivil(fc) {
-        var ec = getVal(fc, "new_estadocivil");
-        var esCasado = (ec === EstadoCivil.Casado || ec === EstadoCivil.UnionLibre);
+        var ec       = getVal(fc, "new_estadocivil");
+        var esCasado = (ec === EstadoCivil.Casado);
+
+        setSeccionesVisible(fc, ["secc_datos_conyugue"], esCasado);
         setVisible(fc, CAMPOS_CONYUGE, esCasado);
         setRequerido(fc, ["new_primernombredelcnyuge", "new_primerapellidodelcnyuge"], esCasado);
     }
