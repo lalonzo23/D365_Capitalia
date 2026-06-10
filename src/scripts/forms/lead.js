@@ -242,7 +242,7 @@ Cap.Lead = (function () {
     // ── Regla 7c: Domicilio segun País de Residencia ─────────────────────────
     // RD: muestra Provincia/Municipio/Sector/Número/Edificio, oculta Dirección Completa.
     // Otro país: muestra solo Dirección Completa (más País), oculta el resto.
-    var PAIS_REPUBLICA_DOMINICANA = "República Dominicana";
+    var ID_REPUBLICA_DOMINICANA = "680DA2A1-169C-E711-8111-C4346BDCF161";
 
     var CAMPOS_DOM_LOCAL = [
         "new_provinciaderesidencia",
@@ -255,7 +255,8 @@ Cap.Lead = (function () {
 
     function aplicarDomicilioPorPais(fc) {
         var pais = getVal(fc, "new_paisderesidenciaperfilderiesgo");
-        var esRD = !!(pais && pais[0] && pais[0].name === PAIS_REPUBLICA_DOMINICANA);
+        var idPais = (pais && pais[0] && pais[0].id) ? pais[0].id.replace(/[{}]/g, "").toUpperCase() : "";
+        var esRD = (idPais === ID_REPUBLICA_DOMINICANA);
 
         setVisible(fc, CAMPOS_DOM_LOCAL,      esRD);
         setVisible(fc, CAMPOS_DOM_EXTRANJERO, !esRD);
