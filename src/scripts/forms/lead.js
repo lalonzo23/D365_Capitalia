@@ -70,6 +70,12 @@ Cap.Lead = (function () {
         "emailaddress2",                     // 29. Correo electrónico (empresa)
         "jobtitle",                          // 30. Cargo en la empresa
         "address1_composite",                // 31. Dirección de la empresa
+        // Lugar de trabajo (secc_lugar_trabajo)
+        "new_pas",                           // País laboral
+        "new_provincia",                     // Provincia laboral
+        "new_municipio",                     // Municipio laboral
+        "new_sectorlaboral",                 // Sector laboral
+        // address1_line2 (Número) y address1_line3 (Edificio/Local) ya están incluidos arriba
         // PEP (38-45)
         "new_espep",                         // 38. ¿Es PEP?
         "new_indiqueelcargo",                // 39. Cargo público
@@ -239,8 +245,9 @@ Cap.Lead = (function () {
     }
 
     // ── Tabs / secciones exclusivos de Persona Jurídica ─────────────────────
-    var TABS_JURIDICA     = ["tab_fatca", "tab_empresas", "tab_accionistas", "tab_consejo"];
+    var TABS_JURIDICA      = ["tab_fatca", "tab_empresas", "tab_accionistas", "tab_consejo"];
     var SECCIONES_JURIDICA = ["secc_datos_cliente", "secc_desc_negocio"];
+    var SECCIONES_FISICA   = ["secc_lugar_trabajo"];
 
     // ── Regla 1: Tipo de Persona ─────────────────────────────────────────────
     function aplicarTipoPersona(fc) {
@@ -253,9 +260,10 @@ Cap.Lead = (function () {
             setRequerido(fc, ["new_primerapellido", "new_fechadenacimiento",
                                "new_tipodeidentificacin", "new_sexo"], true);
             setRequerido(fc, ["companyname", "new_rnc"], false);
-            // Tabs y secciones exclusivas de Jurídica → ocultar
+            // Tabs y secciones
             setTabsVisible(fc, TABS_JURIDICA, false);
             setSeccionesVisible(fc, SECCIONES_JURIDICA, false);
+            setSeccionesVisible(fc, SECCIONES_FISICA, true);
 
         } else if (tipo === TipoPersona.Juridica) {
             // Campos
@@ -266,9 +274,10 @@ Cap.Lead = (function () {
             setRequerido(fc, ["companyname", "new_rnc"], true);
             setRequerido(fc, ["new_primerapellido", "new_fechadenacimiento",
                                "new_tipodeidentificacin", "new_sexo"], false);
-            // Tabs y secciones exclusivas de Jurídica → mostrar
+            // Tabs y secciones
             setTabsVisible(fc, TABS_JURIDICA, true);
             setSeccionesVisible(fc, SECCIONES_JURIDICA, true);
+            setSeccionesVisible(fc, SECCIONES_FISICA, false);
 
         } else {
             // Sin selección: ocultar todo
@@ -276,6 +285,7 @@ Cap.Lead = (function () {
             setVisible(fc, CAMPOS_JURIDICA, false);
             setTabsVisible(fc, TABS_JURIDICA, false);
             setSeccionesVisible(fc, SECCIONES_JURIDICA, false);
+            setSeccionesVisible(fc, SECCIONES_FISICA, false);
         }
 
         // Re-evaluar sub-reglas que dependen del tipo de persona
