@@ -49,7 +49,7 @@ Cap.Lead = (function () {
         "new_sexo",                          // 9. Sexo
         "emailaddress1",                     // 10. Correo electrónico
         "mobilephone",                       // 11. Teléfono celular
-        "new_paisderesidenciaperfilderiesgo",// 12. País de residencia
+        "new_pasderesidencia",// 12. País de residencia
         "address1_line1",                    // 13. Calle o Avenida
         "address1_line2",                    // 14. Núm.
         "address1_line3",                    // 15. Edificio
@@ -254,7 +254,7 @@ Cap.Lead = (function () {
     var CAMPOS_DOM_EXTRANJERO = ["new_addressfullhome"];
 
     function aplicarDomicilioPorPais(fc) {
-        var pais = getVal(fc, "new_paisderesidenciaperfilderiesgo");
+        var pais = getVal(fc, "new_pasderesidencia");
         var idPais = (pais && pais[0] && pais[0].id) ? pais[0].id.replace(/[{}]/g, "").toUpperCase() : "";
         var esRD = (idPais === ID_REPUBLICA_DOMINICANA);
 
