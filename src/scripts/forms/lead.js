@@ -203,6 +203,10 @@ Cap.Lead = (function () {
         aplicarNaturalezaReadOnly(executionContext.getFormContext());
     }
 
+    function onPaisResidenciaChange(executionContext) {
+        aplicarDomicilioPorPais(executionContext.getFormContext());
+    }
+
 
     // ════════════════════════════════════════════════════════════════════════
     //  REGLAS DE NEGOCIO
@@ -218,6 +222,7 @@ Cap.Lead = (function () {
         aplicarTin(fc);
         aplicarClienteTitular(fc);
         aplicarNaturalezaReadOnly(fc);
+        aplicarDomicilioPorPais(fc);
     }
 
     // ── Regla 7b: Naturaleza readonly cuando Física + Individual ─────────────
@@ -232,6 +237,28 @@ Cap.Lead = (function () {
         if (ctrl) {
             ctrl.setDisabled(bloquear);
         }
+    }
+
+    // ── Regla 7c: Domicilio segun País de Residencia ─────────────────────────
+    // RD: muestra Provincia/Municipio/Sector/Número/Edificio, oculta Dirección Completa.
+    // Otro país: muestra solo Dirección Completa (más País), oculta el resto.
+    var PAIS_REPUBLICA_DOMINICANA = "República Dominicana";
+
+    var CAMPOS_DOM_LOCAL = [
+        "new_provinciaderesidencia",
+        "new_municipioderesidencia",
+        "new_sectorresidencia",
+        "address2_line2",
+        "address2_line3"
+    ];
+    var CAMPOS_DOM_EXTRANJERO = ["new_addressfullhome"];
+
+    function aplicarDomicilioPorPais(fc) {
+        var pais = getVal(fc, "new_paisderesidenciaperfilderiesgo");
+        var esRD = !!(pais && pais[0] && pais[0].name === PAIS_REPUBLICA_DOMINICANA);
+
+        setVisible(fc, CAMPOS_DOM_LOCAL,      esRD);
+        setVisible(fc, CAMPOS_DOM_EXTRANJERO, !esRD);
     }
 
     // ── Regla 7: Cliente Potencial Titular ───────────────────────────────────
@@ -432,6 +459,7 @@ Cap.Lead = (function () {
         onRepresentanteLegalChange: onRepresentanteLegalChange,
         onTinChange:               onTinChange,
         onNaturalezaChange:        onNaturalezaChange,
-        onTipoCuentaChange:        onTipoCuentaChange
+        onTipoCuentaChange:        onTipoCuentaChange,
+        onPaisResidenciaChange:    onPaisResidenciaChange
     };
 })();
