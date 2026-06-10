@@ -5,10 +5,10 @@
  * Dependencia  : new_/scripts/common/utils.js  (Cap.Common)
  *                Cargar utils.js ANTES que este archivo en las bibliotecas del formulario.
  *
- * Registro de eventos
+ * Registro de eventos (marcar "pasar contexto de ejecución como primer parámetro")
  * ─────────────────────────────────────────────────────────────────────────────
- * OnLoad     →  Cap.Lead.onLoad          (pasar contexto de ejecución)
- * OnSave     →  Cap.Lead.onSave          (pasar contexto de ejecución)
+ * OnLoad     →  Cap.Lead.onLoad
+ * OnSave     →  Cap.Lead.onSave          (sin validaciones; placeholder)
  *
  * OnChange: new_tipodepersona            →  Cap.Lead.onTipoPersonaChange
  * OnChange: new_tipodeidentificacin      →  Cap.Lead.onTipoIdChange
@@ -17,7 +17,21 @@
  * OnChange: new_aplicarepresentantelegal →  Cap.Lead.onRepresentanteLegalChange
  * OnChange: new_poseetin                 →  Cap.Lead.onTinChange
  * OnChange: new_naturaleza               →  Cap.Lead.onNaturalezaChange
- * OnChange: new_controlaccionistasultimos5annos → Cap.Lead.onVinculadoCapitaliaChange
+ * OnChange: new_tipodecuenta             →  Cap.Lead.onTipoCuentaChange
+ * OnChange: new_pasderesidencia          →  Cap.Lead.onPaisResidenciaChange
+ * OnChange: new_pas                      →  Cap.Lead.onPaisLaboralChange
+ *
+ * Reglas de visibilidad/obligatoriedad aplicadas:
+ *   1. Tipo de Persona       → bloques Física / Jurídica (campos, tabs y secciones)
+ *   2. Tipo de Identificación → Cédula / Pasaporte / Acta de Nacimiento
+ *   3. Estado Civil          → sección del cónyuge (solo Casado)
+ *   4. PEP                   → cargo y período (solo si es PEP)
+ *   5. Representante Legal   → lookup representante (solo si aplica)
+ *   6. TIN/EIN              → número TIN (solo si posee)
+ *   7. Naturaleza           → cliente titular (solo Co-Titular)
+ *   7b. Naturaleza readonly  → cuando Física + Cuenta Individual
+ *   7c. Domicilio por país   → campos locales vs. dirección completa según residencia
+ *   7d. Lugar de trabajo     → campos locales según país laboral
  */
 "use strict";
 
