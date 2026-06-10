@@ -89,13 +89,49 @@ Cap.Lead = (function () {
     ];
 
     // ── Campos Persona Jurídica ──────────────────────────────────────────────
+    // Mapeo del Formulario Conozca Su Cliente (CSC) Persona Jurídica v2025-12-03
     var CAMPOS_JURIDICA = [
-        "companyname", "new_rnc", "new_noderegistromercantil",
-        "new_fechadeconstitucin", "new_anosdeoperacion",
-        "new_numerodeaccionesemitidas", "new_numerodeaccionesdistribuidas",
-        "new_controlaccionistasultimos5annos", "new_ventaspromediomensual",
-        "new_ventasultimoperiodo", "numberofemployees",
-        "new_aplicarepresentantelegal", "new_representante"
+        // Datos del cliente (1-7)
+        "companyname",                       // 1. Denominación Social
+        "new_fechadeconstitucin",            // 2. Fecha de Constitución
+        "telephone1",                        // 3. Teléfono
+        "new_rnc",                           // 4. RNC
+        "websiteurl",                        // 5. Página web
+        "new_noderegistromercantil",         // 6. Registro Mercantil
+        "address1_composite",                // 7. Domicilio
+        "address1_line1",                    //    Calle o Avenida
+        "address1_line2",                    //    Núm.
+        "address1_line3",                    //    Edificio
+        "new_sectorlaboral",                 //    Sector
+        "new_provincia",                     //    Provincia o Estado
+        "new_pas",                           //    País laboral
+        // Datos del representante legal (8-21)
+        "new_aplicarepresentantelegal",      //    ¿Aplica representante legal?
+        "new_representante",                 // 8-9. Representante (lookup a contact)
+        // 10-21 viven en la entidad Contact (representante)
+        // Datos económicos / empresariales (22-30)
+        "new_actividadeconomica",            // 22. Actividad económica
+        "industrycode",                      // 23. Sector
+        "numberofemployees",                 // 25. Número de empleados
+        "new_ingresosefectivo",              // 26. % Ingresos en efectivo
+        "new_ventaspromediomensual",         // 27. Ventas promedio mensual
+        "new_ventasultimoperiodo",           // 28. Ventas último período
+        "new_anosdeoperacion",               // 30. Años de operación
+        // Control accionario y administración (33-34)
+        "new_numerodeaccionesemitidas",      //    Acciones emitidas
+        "new_numerodeaccionesdistribuidas",  //    Acciones distribuidas
+        "new_controlaccionistasultimos5annos", // 34. Control accionistas últimos 5 años
+        // FATCA (37-40)
+        "new_poseetin",                      // 39. ¿Posee TIN o EIN?
+        "new_tin",                           // 40. Número TIN o EIN
+        // PEP (41-42)
+        "new_espep",                         // 41. ¿Accionista/socio es PEP?
+        "new_indiqueelcargo",                //    Cargo público
+        "new_estactualmenteocupandoelcargo", //    Período
+        // Vinculado a Capitalia (43-44)
+        "new_dequeformavinculado",           // 44. ¿De qué forma?
+        "new_nombrecompletovinculadoacapitalia", //    Nombres y apellidos
+        "new_parentescovinculadoacapitalia"  //    Vínculo
     ];
 
     // ── Campos cónyuge ───────────────────────────────────────────────────────
