@@ -207,6 +207,10 @@ Cap.Lead = (function () {
         aplicarDomicilioPorPais(executionContext.getFormContext());
     }
 
+    function onPaisLaboralChange(executionContext) {
+        aplicarLugarTrabajoPorPais(executionContext.getFormContext());
+    }
+
 
     // ════════════════════════════════════════════════════════════════════════
     //  REGLAS DE NEGOCIO
@@ -223,6 +227,7 @@ Cap.Lead = (function () {
         aplicarClienteTitular(fc);
         aplicarNaturalezaReadOnly(fc);
         aplicarDomicilioPorPais(fc);
+        aplicarLugarTrabajoPorPais(fc);
     }
 
     // ── Regla 7b: Naturaleza readonly cuando Física + Individual ─────────────
@@ -262,6 +267,25 @@ Cap.Lead = (function () {
         setVisible(fc, CAMPOS_DOM_LOCAL,      esRD);
         // Direccion Completa: oculta si pais vacio o si es RD; visible solo si hay pais distinto a RD
         setVisible(fc, CAMPOS_DOM_EXTRANJERO, !sinPais && !esRD);
+    }
+
+    // ── Regla 7d: Lugar de Trabajo segun País laboral ────────────────────────
+    // Misma logica que domicilio: solo muestra los campos locales si es RD.
+    // La seccion secc_lugar_trabajo no tiene un campo "direccion completa".
+    var CAMPOS_TRAB_LOCAL = [
+        "new_provincia",
+        "new_municipio",
+        "new_sectorlaboral",
+        "address1_line2",
+        "address1_line3"
+    ];
+
+    function aplicarLugarTrabajoPorPais(fc) {
+        var pais   = getVal(fc, "new_pas");
+        var idPais = (pais && pais[0] && pais[0].id) ? pais[0].id.replace(/[{}]/g, "").toUpperCase() : "";
+        var esRD   = (idPais === ID_REPUBLICA_DOMINICANA);
+
+        setVisible(fc, CAMPOS_TRAB_LOCAL, esRD);
     }
 
     // ── Regla 7: Cliente Potencial Titular ───────────────────────────────────
@@ -463,6 +487,7 @@ Cap.Lead = (function () {
         onTinChange:               onTinChange,
         onNaturalezaChange:        onNaturalezaChange,
         onTipoCuentaChange:        onTipoCuentaChange,
-        onPaisResidenciaChange:    onPaisResidenciaChange
+        onPaisResidenciaChange:    onPaisResidenciaChange,
+        onPaisLaboralChange:       onPaisLaboralChange
     };
 })();
