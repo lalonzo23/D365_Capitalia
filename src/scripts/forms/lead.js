@@ -362,6 +362,10 @@ Cap.Lead = (function () {
             aplicarEstadoCivil(fc);
             aplicarPep(fc);
             aplicarTin(fc);
+            // Tras mostrar el bloque Física, re-aplicar reglas de dirección para
+            // dejar visible solo el País salvo que sea República Dominicana.
+            aplicarDomicilioPorPais(fc);
+            aplicarLugarTrabajoPorPais(fc);
         }
         if (tipo === TipoPersona.Juridica) {
             aplicarRepresentanteLegal(fc);
