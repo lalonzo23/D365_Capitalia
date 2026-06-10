@@ -254,12 +254,14 @@ Cap.Lead = (function () {
     var CAMPOS_DOM_EXTRANJERO = ["new_addressfullhome"];
 
     function aplicarDomicilioPorPais(fc) {
-        var pais = getVal(fc, "new_pasderesidencia");
+        var pais   = getVal(fc, "new_pasderesidencia");
         var idPais = (pais && pais[0] && pais[0].id) ? pais[0].id.replace(/[{}]/g, "").toUpperCase() : "";
-        var esRD = (idPais === ID_REPUBLICA_DOMINICANA);
+        var sinPais = (idPais === "");
+        var esRD    = (idPais === ID_REPUBLICA_DOMINICANA);
 
         setVisible(fc, CAMPOS_DOM_LOCAL,      esRD);
-        setVisible(fc, CAMPOS_DOM_EXTRANJERO, !esRD);
+        // Direccion Completa: oculta si pais vacio o si es RD; visible solo si hay pais distinto a RD
+        setVisible(fc, CAMPOS_DOM_EXTRANJERO, !sinPais && !esRD);
     }
 
     // ── Regla 7: Cliente Potencial Titular ───────────────────────────────────
