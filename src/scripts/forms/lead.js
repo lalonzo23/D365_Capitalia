@@ -33,14 +33,59 @@ Cap.Lead = (function () {
     var Naturaleza  = { Titular: 1, CoTitular: 2 };
 
     // ── Campos Persona Física ────────────────────────────────────────────────
+    // Mapeo del Formulario Conozca Su Cliente (CSC) Persona Física v2025-12-03
     var CAMPOS_FISICA = [
-        "firstname", "middlename", "new_primerapellido", "new_segundoapellido",
-        "new_sexo", "new_fechadenacimiento", "new_estadocivil",
-        "new_tipodeidentificacin", "new_cedula", "new_pasaporte",
-        "new_fechaexpiracioncedula", "new_fechaexpiracionpasaporte",
-        "new_nacionalidad", "new_segundanacionalidad", "new_paisdeorigen",
-        "new_profesion", "new_ocupacion", "new_suma_nivelacademico",
-        "new_espep", "new_poseetin", "new_tin"
+        // Datos del cliente (1-18)
+        "firstname",                         // 1. Nombres
+        "middlename",                        // (segundo nombre)
+        "new_primerapellido",                // 2. Primer Apellido
+        "new_segundoapellido",               // 2. Segundo Apellido
+        "new_cedula",                        // 3. Cédula de identidad
+        "new_fechadenacimiento",             // 4. Fecha de nacimiento
+        "new_paisdeorigen",                  // 5. Lugar de nacimiento
+        "new_nacionalidad",                  // 6. Nacionalidad
+        "new_segundanacionalidad",           // 7. Segunda Nacionalidad
+        "new_pasaporte",                     // 8. Pasaporte
+        "new_sexo",                          // 9. Sexo
+        "emailaddress1",                     // 10. Correo electrónico
+        "mobilephone",                       // 11. Teléfono celular
+        "new_paisderesidenciaperfilderiesgo",// 12. País de residencia
+        "address1_line1",                    // 13. Calle o Avenida
+        "address1_line2",                    // 14. Núm.
+        "address1_line3",                    // 15. Edificio
+        "new_sectorresidencia",              // 16. Sector
+        "new_provinciaderesidencia",         // 17. Provincia o Estado
+        "new_estadocivil",                   // 18. Estado Civil
+        // Datos del cónyuge (19-20) — visibilidad detallada en regla Estado Civil
+        "new_primernombredelcnyuge",         // 19. Nombres del cónyuge
+        "new_primerapellidodelcnyuge",       // (apellidos del cónyuge)
+        "new_tipodeidentificacindelcnyuge",  // 20. Cédula del cónyuge (tipo)
+        // Datos profesionales y laborables (21-31)
+        "new_suma_nivelacademico",           // 22. Nivel académico
+        "new_profesion",                     // 23. Profesión
+        "new_ocupacion",                     // 24. Ocupación
+        "new_nombrecompania",                // 25. Nombre de la empresa
+        "new_actividadeconomica",            // 26. Actividad económica
+        "telephone1",                        // 28. Teléfono de la empresa
+        "emailaddress2",                     // 29. Correo electrónico (empresa)
+        "jobtitle",                          // 30. Cargo en la empresa
+        "address1_composite",                // 31. Dirección de la empresa
+        // PEP (38-45)
+        "new_espep",                         // 38. ¿Es PEP?
+        "new_indiqueelcargo",                // 39. Cargo público
+        "new_estactualmenteocupandoelcargo", // 40. Período de ocupación
+        // Vinculado a Capitalia (46-50)
+        "new_controlaccionistasultimos5annos",  // 46. ¿Vinculado a Capitalia?
+        "new_dequeformavinculado",              // 47. ¿De qué forma?
+        "new_nombrecompletovinculadoacapitalia",// 48. Nombres y Apellidos
+        "new_parentescovinculadoacapitalia",    // 49. Vínculo
+        // FATCA (51-52)
+        "new_poseetin",                      // 51. ¿Ciudadano/residente USA?
+        "new_tin",                           // 52. Núm. seguridad social / residencia
+        // Identificación complementaria
+        "new_tipodeidentificacin",
+        "new_fechaexpiracioncedula",
+        "new_fechaexpiracionpasaporte"
     ];
 
     // ── Campos Persona Jurídica ──────────────────────────────────────────────
