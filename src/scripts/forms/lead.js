@@ -31,7 +31,7 @@
  *   7. Naturaleza           → cliente titular (solo Co-Titular)
  *   7b. Naturaleza readonly  → cuando Física + Cuenta Individual
  *   7c. Domicilio por país   → campos locales vs. dirección completa según residencia
- *   7d. Lugar de trabajo     → campos locales según país laboral
+ *   7d. Lugar de trabajo     → campos locales vs. dirección completa según país laboral
  */
 "use strict";
 
@@ -84,12 +84,6 @@ Cap.Lead = (function () {
         "emailaddress2",                     // 29. Correo electrónico (empresa)
         "jobtitle",                          // 30. Cargo en la empresa
         "address1_composite",                // 31. Dirección de la empresa
-        // Lugar de trabajo (secc_lugar_trabajo)
-        "new_pas",                           // País laboral
-        "new_provincia",                     // Provincia laboral
-        "new_municipio",                     // Municipio laboral
-        "new_sectorlaboral",                 // Sector laboral
-        // address1_line2 (Número) y address1_line3 (Edificio/Local) ya están incluidos arriba
         // PEP (38-45)
         "new_espep",                         // 38. ¿Es PEP?
         "new_indiqueelcargo",                // 39. Cargo público
@@ -119,12 +113,10 @@ Cap.Lead = (function () {
         "websiteurl",                        // 5. Página web
         "new_noderegistromercantil",         // 6. Registro Mercantil
         "address1_composite",                // 7. Domicilio
-        "address1_line1",                    //    Calle o Avenida
-        "address1_line2",                    //    Núm.
-        "address1_line3",                    //    Edificio
-        "new_sectorlaboral",                 //    Sector
-        "new_provincia",                     //    Provincia o Estado
-        "new_pas",                           //    País laboral
+        // NOTA: los campos de domicilio/lugar de trabajo (address1_line1/2/3,
+        // new_sectorlaboral, new_provincia, new_pas) son compartidos con la
+        // sección "Lugar de Trabajo" de Persona Física y NO se controlan aquí,
+        // para no ocultarlos cuando el tipo de persona es Física.
         // Datos del representante legal (8-21)
         "new_aplicarepresentantelegal",      //    ¿Aplica representante legal?
         "new_representante",                 // 8-9. Representante (lookup a contact)
@@ -284,8 +276,9 @@ Cap.Lead = (function () {
     }
 
     // ── Regla 7d: Lugar de Trabajo segun País laboral ────────────────────────
-    // Misma logica que domicilio: solo muestra los campos locales si es RD.
-    // La seccion secc_lugar_trabajo no tiene un campo "direccion completa".
+    // RD: muestra Provincia/Municipio/Sector/Número/Edificio, oculta Dirección Completa.
+    // Otro país: muestra solo Dirección Completa (más País), oculta el resto.
+    // Vacío: oculta todo (campos locales y Dirección Completa).
     var CAMPOS_TRAB_LOCAL = [
         "new_provincia",
         "new_municipio",
@@ -293,13 +286,17 @@ Cap.Lead = (function () {
         "address1_line2",
         "address1_line3"
     ];
+    var CAMPOS_TRAB_EXTRANJERO = ["new_addressfulljob"];
 
     function aplicarLugarTrabajoPorPais(fc) {
-        var pais   = getVal(fc, "new_pas");
-        var idPais = (pais && pais[0] && pais[0].id) ? pais[0].id.replace(/[{}]/g, "").toUpperCase() : "";
-        var esRD   = (idPais === ID_REPUBLICA_DOMINICANA);
+        var pais    = getVal(fc, "new_pas");
+        var idPais  = (pais && pais[0] && pais[0].id) ? pais[0].id.replace(/[{}]/g, "").toUpperCase() : "";
+        var sinPais = (idPais === "");
+        var esRD    = (idPais === ID_REPUBLICA_DOMINICANA);
 
-        setVisible(fc, CAMPOS_TRAB_LOCAL, esRD);
+        setVisible(fc, CAMPOS_TRAB_LOCAL,      esRD);
+        // Direccion Completa: visible solo si hay pais distinto a RD
+        setVisible(fc, CAMPOS_TRAB_EXTRANJERO, !sinPais && !esRD);
     }
 
     // ── Regla 7: Cliente Potencial Titular ───────────────────────────────────
@@ -313,9 +310,9 @@ Cap.Lead = (function () {
     }
 
     // ── Tabs / secciones exclusivos de Persona Jurídica ─────────────────────
-    var TABS_JURIDICA      = ["tab_fatca", "tab_empresas", "tab_accionistas", "tab_consejo"];
+    // tab_fatca queda fuera: debe mostrarse siempre (no depende del tipo de persona).
+    var TABS_JURIDICA      = ["tab_empresas", "tab_accionistas", "tab_consejo"];
     var SECCIONES_JURIDICA = ["secc_datos_cliente", "secc_desc_negocio"];
-    var SECCIONES_FISICA   = ["secc_lugar_trabajo"];
 
     // ── Regla 1: Tipo de Persona ─────────────────────────────────────────────
     function aplicarTipoPersona(fc) {
@@ -331,7 +328,6 @@ Cap.Lead = (function () {
             // Tabs y secciones
             setTabsVisible(fc, TABS_JURIDICA, false);
             setSeccionesVisible(fc, SECCIONES_JURIDICA, false);
-            setSeccionesVisible(fc, SECCIONES_FISICA, true);
 
         } else if (tipo === TipoPersona.Juridica) {
             // Campos
@@ -345,7 +341,6 @@ Cap.Lead = (function () {
             // Tabs y secciones
             setTabsVisible(fc, TABS_JURIDICA, true);
             setSeccionesVisible(fc, SECCIONES_JURIDICA, true);
-            setSeccionesVisible(fc, SECCIONES_FISICA, false);
 
         } else {
             // Sin selección: ocultar todo
@@ -353,7 +348,6 @@ Cap.Lead = (function () {
             setVisible(fc, CAMPOS_JURIDICA, false);
             setTabsVisible(fc, TABS_JURIDICA, false);
             setSeccionesVisible(fc, SECCIONES_JURIDICA, false);
-            setSeccionesVisible(fc, SECCIONES_FISICA, false);
         }
 
         // Re-evaluar sub-reglas que dependen del tipo de persona
